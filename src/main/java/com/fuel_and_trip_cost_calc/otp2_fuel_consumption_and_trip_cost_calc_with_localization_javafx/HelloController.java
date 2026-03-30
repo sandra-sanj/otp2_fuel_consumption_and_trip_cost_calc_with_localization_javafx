@@ -11,74 +11,94 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class HelloController {
+
+    @FXML
+    public Button btnEN;
+
+    @FXML
+    public Button btnFR;
+
+    @FXML
+    public Button btnJP;
+
+    @FXML
+    public Button btnIR;
+
     @FXML
     public Label lblDistance;
 
     @FXML
     public TextField txtDistance;
+
+    @FXML
     public Label lblConsumption;
+
+    @FXML
     public TextField txtConsumption;
+
+    @FXML
     public Label lblPrice;
+
+    @FXML
     public TextField txtPrice;
+
+    @FXML
     public Button btnCalculate;
-    public Button btnEN;
-    public Button btnFR;
-    public Button btnJP;
-    public Button btnIR;
-    public Label lblInvalidInput;
+
+    @FXML
     public Label lblResult;
 
-    private Locale locale = new Locale("en", "US");
+    private ResourceBundle resource;
+
+    @FXML
+    public void initialize() {
+        this.setLanguage(new Locale("en", "US"));
+    }
 
     @FXML
     public void onCalculateButtonClick(ActionEvent actionEvent) {
-        //lblResult.setText("result calculated");
-
         Calculator calculator = new Calculator();
-        // todo: add error handling
-        double consumption = Double.parseDouble(String.valueOf(txtConsumption.getText()));
-        double distance = Double.parseDouble(String.valueOf(txtDistance.getText()));
-        double fuel = calculator.totalFuel(consumption, distance);
-        double price = Double.parseDouble(String.valueOf(txtPrice.getText()));
-        //lblResult.setText("Fuel: " + fuel + ", Cost: " + calculator.totalCost(fuel, price));
-        double totalPrice = calculator.totalCost(fuel, price);
-        //lblResult.setText(String.valueOf(calculator.totalCost(fuel, price)));
 
-        ResourceBundle resource = ResourceBundle.getBundle("MessagesBundle", locale);
-        lblResult.setText(MessageFormat.format(resource.getString("result.label"), fuel, totalPrice));
+        try {
+            double consumption = Double.parseDouble(String.valueOf(txtConsumption.getText()));
+            double distance = Double.parseDouble(String.valueOf(txtDistance.getText()));
+            double fuel = calculator.totalFuel(consumption, distance);
+            double price = Double.parseDouble(String.valueOf(txtPrice.getText()));
+            double totalPrice = calculator.totalCost(fuel, price);
+            lblResult.setText(MessageFormat.format(resource.getString("result.label"), fuel, totalPrice));
+        } catch (Exception e) {
+            lblResult.setText(resource.getString("invalid.input"));
+        }
     }
 
     @FXML
     public void onLanguageEnglishButtonClick(ActionEvent actionEvent) {
-        setLanguage("en", "US");
+        setLanguage(new Locale("en", "US"));
     }
 
     @FXML
     public void onLanguageFrenchButtonClick(ActionEvent actionEvent) {
-        setLanguage("fr", "FR");
+        setLanguage(new Locale("fr", "FR"));
     }
 
     @FXML
     public void onLanguageJapaneseButtonClick(ActionEvent actionEvent) {
-        setLanguage("ja", "JP");
+        setLanguage(new Locale("ja", "JP"));
     }
 
     @FXML
     public void onLanguagePersianButtonClick(ActionEvent actionEvent) {
-        setLanguage("fa", "IR");
+        setLanguage(new Locale("fa", "IR"));
     }
 
-    public void setLanguage(String language, String country) {
-        this.locale = new Locale(language, country);
-        ResourceBundle resource = ResourceBundle.getBundle("MessagesBundle", this.locale);
-        // todo: display error if language file is missing
+    public void setLanguage(Locale locale) {
+        this.resource = ResourceBundle.getBundle("MessagesBundle", locale);
 
         lblDistance.setText(resource.getString("distance.label"));
         lblConsumption.setText(resource.getString("consumption.label"));
         lblPrice.setText(resource.getString("price.label"));
         btnCalculate.setText(resource.getString("calculate.button"));
         lblResult.setText(resource.getString("result.label"));
-        lblInvalidInput.setText(resource.getString("invalid.input"));
 
         // empty textfields and result
         //txtDistance.setText(null);
