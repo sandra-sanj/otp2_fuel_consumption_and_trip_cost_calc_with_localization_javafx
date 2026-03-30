@@ -8,14 +8,14 @@ pipeline {
     environment {
         PATH = "/usr/local/bin:/usr/bin:/bin:${env.PATH}"
         DOCKERHUB_CREDENTIALS_ID = 'docker_hub'
-        DOCKER_IMAGE = 'sandrajuu/otp2_fuel_consumption_and_trip_calc_with_localization_javafx'
+        DOCKER_IMAGE = 'sandrajuu/otp2_fuel_consumption_and_trip_cost_calc_with_localization_javafx'
         DOCKER_TAG = 'latest'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/sandra-sanj/otp2_fuel_consumption_and_trip_calc_with_localization_javafx.git'
+                git branch: 'main', url: 'https://github.com/sandra-sanj/otp2_fuel_consumption_and_trip_cost_calc_with_localization_javafx.git'
             }
         }
 
