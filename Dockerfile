@@ -27,4 +27,4 @@ RUN mvn clean package -DskipTests
 RUN ls -l target
 
 # Run the **shaded JAR** with JavaFX modules
-CMD ["java", "--module-path", "/opt/javafx-sdk-21/lib", "--add-modules", "javafx.controls,javafx.fxml", "-Dprism.order=sw", "-jar", "target/*jar"]
+CMD ["java", "--module-path", "/opt/javafx-sdk-21/lib", "--add-modules", "javafx.controls,javafx.fxml", "-Dprism.order=sw", "-jar", "target/app.jar"]
