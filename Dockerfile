@@ -14,6 +14,11 @@ RUN wget https://download2.gluonhq.com/openjfx/21/openjfx-21_linux-aarch64_bin-s
     unzip /tmp/openjfx.zip -d /opt && \
     rm /tmp/openjfx.zip
 
+# install fonts
+RUN apt-get update && apt-get install -y \
+    fonts-ipafont \
+    fonts-noto-cjk
+
 WORKDIR /app
 
 # Copy project files
