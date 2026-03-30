@@ -61,7 +61,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.example.MainApp</mainClass>
+                            <mainClass>com.fuel_and_trip_cost_calc.otp2_fuel_consumption_and_trip_cost_calc_with_localization_javafx.Launcher</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
