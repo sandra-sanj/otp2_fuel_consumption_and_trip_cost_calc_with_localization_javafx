@@ -20,7 +20,7 @@ services:
       retries: 5
 
   app:
-    image: otp2_fuel_consumption_and_trip_cost_calc_with_localization_javafx:latest
+    image: fuel_cost_calc_with_localization_javafx_app:latest
     container_name: fuel-calculator-app
     build:
       dockerfile: Dockerfile
