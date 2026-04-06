@@ -37,10 +37,10 @@ pipeline {
                 script {
                     if (isUnix()) {
                         sh "docker build -t ${DOCKER_IMAGE_APP}:${DOCKER_TAG} ."
-                        sh "docker build -t ${DOCKER_IMAGE_DB}:${DOCKER_TAG} ."
+                        sh "docker build -t ${DOCKER_IMAGE_DB}:${DOCKER_TAG} ./database_schema"
                     } else {
                         bat "docker build -t ${DOCKER_IMAGE_APP}:${DOCKER_TAG} ."
-                        bat "docker build -t ${DOCKER_IMAGE_DB}:${DOCKER_TAG} ."
+                        bat "docker build -t ${DOCKER_IMAGE_DB}:${DOCKER_TAG} ./database_schema"
                     }
                 }
             }
