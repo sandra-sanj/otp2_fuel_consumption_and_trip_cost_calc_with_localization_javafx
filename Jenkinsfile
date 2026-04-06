@@ -8,7 +8,8 @@ pipeline {
     environment {
         PATH = "/usr/local/bin:/usr/bin:/bin:${env.PATH}"
         DOCKERHUB_CREDENTIALS_ID = 'docker_hub'
-        DOCKER_IMAGE = 'sandrajuu/otp2_fuel_consumption_and_trip_cost_calc_with_localization_javafx'
+        DOCKER_IMAGE_APP = 'sandrajuu/fuel_cost_calc_with_localization_javafx_app'
+        DOCKER_IMAGE_DB = 'sandrajuu/fuel_cost_calc_with_localization_javafx_database'
         DOCKER_TAG = 'latest'
     }
 
@@ -35,9 +36,11 @@ pipeline {
             steps {
                 script {
                     if (isUnix()) {
-                        sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
+                        sh "docker build -t ${DOCKER_IMAGE_APP}:${DOCKER_TAG} ."
+                        sh "docker build -t ${DOCKER_IMAGE_DB}:${DOCKER_TAG} ."
                     } else {
-                        bat "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
+                        bat "docker build -t ${DOCKER_IMAGE_APP}:${DOCKER_TAG} ."
+                        bat "docker build -t ${DOCKER_IMAGE_DB}:${DOCKER_TAG} ."
                     }
                 }
             }
@@ -46,9 +49,18 @@ pipeline {
         stage('Push Docker Image to Docker Hub') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'docker_hub', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
-                        sh "echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin"
-                        sh "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                    if (isUnix()) {
+                        withCredentials([usernamePassword(credentialsId: 'docker_hub', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+                            sh "echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin"
+                            sh "docker push ${DOCKER_IMAGE_APP}:${DOCKER_TAG}"
+                            sh "docker push ${DOCKER_IMAGE_DB}:${DOCKER_TAG}"
+                        }
+                    } else {
+                        withCredentials([usernamePassword(credentialsId: 'docker_hub', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+                            bat "echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin"
+                            bat "docker push ${DOCKER_IMAGE_APP}:${DOCKER_TAG}"
+                            bat "docker push ${DOCKER_IMAGE_DB}:${DOCKER_TAG}"
+                        }
                     }
                 }
             }
