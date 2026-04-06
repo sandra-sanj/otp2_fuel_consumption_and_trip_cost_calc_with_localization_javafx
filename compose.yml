@@ -1,0 +1,40 @@
+services:
+  db:
+    image: mariadb:11
+    container_name: fuel-calculator-db
+    build:
+      context: ./database_schema
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Test12
+      MYSQL_DATABASE: fuel_and_trip_cost_calc_translation
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mariadb-admin", "ping", "-h", "localhost", "-u", "root", "-pTest12" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    image: otp2_fuel_consumption_and_trip_cost_calc_with_localization_javafx:latest
+    container_name: fuel-calculator-app
+    build:
+      dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: Test12
+      DISPLAY: host.docker.internal:0
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+
+volumes:
+  db_data:

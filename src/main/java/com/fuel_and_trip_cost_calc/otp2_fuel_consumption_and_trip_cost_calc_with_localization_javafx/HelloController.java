@@ -7,7 +7,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class HelloController {
@@ -48,11 +50,13 @@ public class HelloController {
     @FXML
     public Label lblResult;
 
-    private ResourceBundle resource;
+    private Locale currentLocale;
+    private Map<String, String> translations;
 
     @FXML
     public void initialize() {
-        this.setLanguage(new Locale("en", "US"));
+        this.currentLocale = new Locale("en", "US");
+        setLanguage();
     }
 
     @FXML
@@ -62,48 +66,60 @@ public class HelloController {
         try {
             double consumption = Double.parseDouble(String.valueOf(txtConsumption.getText()));
             double distance = Double.parseDouble(String.valueOf(txtDistance.getText()));
-            double fuel = calculator.totalFuel(consumption, distance);
+            double total_fuel = calculator.totalFuel(consumption, distance);
             double price = Double.parseDouble(String.valueOf(txtPrice.getText()));
-            double totalPrice = calculator.totalCost(fuel, price);
-            lblResult.setText(MessageFormat.format(resource.getString("result.label"), fuel, totalPrice));
+            double total_cost = calculator.totalCost(total_fuel, price);
+            lblResult.setText(MessageFormat.format(this.translations.get("result.label"), total_fuel, total_cost));
+
+            CalculationService.saveCalculation(distance, consumption, price, total_fuel, total_cost, currentLocale.toString());
+
         } catch (Exception e) {
-            lblResult.setText(resource.getString("invalid.input"));
+            lblResult.setText(this.translations.get("invalid.input"));
         }
     }
 
     @FXML
     public void onLanguageEnglishButtonClick(ActionEvent actionEvent) {
-        setLanguage(new Locale("en", "US"));
+        this.currentLocale = new Locale("en", "US");
+        setLanguage();
     }
 
     @FXML
     public void onLanguageFrenchButtonClick(ActionEvent actionEvent) {
-        setLanguage(new Locale("fr", "FR"));
+        this.currentLocale = new Locale("fr", "FR");
+        setLanguage();
     }
 
     @FXML
     public void onLanguageJapaneseButtonClick(ActionEvent actionEvent) {
-        setLanguage(new Locale("ja", "JP"));
+        this.currentLocale = new Locale("ja", "JP");
+        setLanguage();
     }
 
     @FXML
     public void onLanguagePersianButtonClick(ActionEvent actionEvent) {
-        setLanguage(new Locale("fa", "IR"));
+        this.currentLocale = new Locale("fa", "IR");
+        setLanguage();
     }
 
-    public void setLanguage(Locale locale) {
-        this.resource = ResourceBundle.getBundle("MessagesBundle", locale);
+    public void setLanguage() {
+        this.translations = LocalizationService.loadStrings(this.currentLocale.toString());
 
-        lblDistance.setText(resource.getString("distance.label"));
-        lblConsumption.setText(resource.getString("consumption.label"));
-        lblPrice.setText(resource.getString("price.label"));
-        btnCalculate.setText(resource.getString("calculate.button"));
-        lblResult.setText(resource.getString("result.label"));
+        lblDistance.setText(this.translations.get("distance.label"));
+        lblConsumption.setText(this.translations.get("consumption.label"));
+        lblPrice.setText(this.translations.get("price.label"));
+        btnCalculate.setText(this.translations.get("calculate.button"));
+        lblResult.setText(this.translations.get("result.label"));
 
-        // empty textfields and result
-        //txtDistance.setText(null);
-        //txtConsumption.setText(null);
-        //txtPrice.setText(null);
+        // empty result
         lblResult.setText(null);
+
+        // tests for unused methods
+        /*List<String> allKeys = LocalizationService.getAllKeys(this.currentLocale.toString());
+        System.out.println(allKeys);
+        for (String key : allKeys) {
+            System.out.println(key + ": " + LocalizationService.getString(key, this.currentLocale.toString()));
+        }
+        System.out.println();*/
     }
 }
