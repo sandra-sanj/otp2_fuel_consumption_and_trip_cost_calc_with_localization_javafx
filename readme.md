@@ -77,3 +77,5 @@ public void onLanguageEnglishButtonClick(ActionEvent actionEvent) {
     setLanguage();
 }
 ```
+
+Finally, update database by rebuilding Docker images.
