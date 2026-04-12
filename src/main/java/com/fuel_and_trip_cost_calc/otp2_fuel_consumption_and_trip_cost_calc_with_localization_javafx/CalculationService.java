@@ -13,8 +13,8 @@ public class CalculationService {
             double distance,
             double consumption,
             double price,
-            double total_fuel,
-            double total_cost,
+            double totalFuel,
+            double totalCost,
             String language
     ) throws SQLException {
 
@@ -24,8 +24,8 @@ public class CalculationService {
             stmt.setDouble(1, distance);
             stmt.setDouble(2, consumption);
             stmt.setDouble(3, price);
-            stmt.setDouble(4, total_fuel);
-            stmt.setDouble(5, total_cost);
+            stmt.setDouble(4, totalFuel);
+            stmt.setDouble(5, totalCost);
             stmt.setString(6, language);
 
             stmt.executeUpdate();

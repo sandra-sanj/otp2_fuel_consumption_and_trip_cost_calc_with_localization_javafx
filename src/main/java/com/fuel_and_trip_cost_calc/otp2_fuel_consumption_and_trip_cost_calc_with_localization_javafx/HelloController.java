@@ -7,10 +7,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.text.MessageFormat;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 public class HelloController {
 
@@ -66,12 +64,12 @@ public class HelloController {
         try {
             double consumption = Double.parseDouble(String.valueOf(txtConsumption.getText()));
             double distance = Double.parseDouble(String.valueOf(txtDistance.getText()));
-            double total_fuel = calculator.totalFuel(consumption, distance);
+            double totalFuel = calculator.totalFuel(consumption, distance);
             double price = Double.parseDouble(String.valueOf(txtPrice.getText()));
-            double total_cost = calculator.totalCost(total_fuel, price);
-            lblResult.setText(MessageFormat.format(this.translations.get("result.label"), total_fuel, total_cost));
+            double totalCost = calculator.totalCost(totalFuel, price);
+            lblResult.setText(MessageFormat.format(this.translations.get("result.label"), totalFuel, totalCost));
 
-            CalculationService.saveCalculation(distance, consumption, price, total_fuel, total_cost, currentLocale.toString());
+            CalculationService.saveCalculation(distance, consumption, price, totalFuel, totalCost, currentLocale.toString());
 
         } catch (Exception e) {
             lblResult.setText(this.translations.get("invalid.input"));
@@ -113,13 +111,5 @@ public class HelloController {
 
         // empty result
         lblResult.setText(null);
-
-        // tests for unused methods
-        /*List<String> allKeys = LocalizationService.getAllKeys(this.currentLocale.toString());
-        System.out.println(allKeys);
-        for (String key : allKeys) {
-            System.out.println(key + ": " + LocalizationService.getString(key, this.currentLocale.toString()));
-        }
-        System.out.println();*/
     }
 }
