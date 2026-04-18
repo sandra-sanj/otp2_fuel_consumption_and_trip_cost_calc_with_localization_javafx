@@ -1,12 +1,13 @@
 pipeline {
     agent any
-
-    tools{
+    tools {
         maven 'Maven3'
     }
 
     environment {
         PATH = "/usr/local/bin:/usr/bin:/bin:${env.PATH}"
+        SONARQUBE_SERVER = 'SonarQubeServer'  // The name of the SonarQube server configured in Jenkins
+
         DOCKERHUB_CREDENTIALS_ID = 'docker_hub'
         DOCKER_IMAGE_APP = 'sandrajuu/fuel_cost_calc_with_localization_javafx_app'
         DOCKER_IMAGE_DB = 'sandrajuu/fuel_cost_calc_with_localization_javafx_database'
@@ -24,10 +25,27 @@ pipeline {
             steps {
                 script {
                     if (isUnix()) {
-                        sh 'mvn clean package -DskipTests'
+                        sh 'mvn clean install'
                     } else {
-                        bat 'mvn clean package -DskipTests'
+                        bat 'mvn clean install'
                     }
+                }
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQubeServer') {
+                    sh """
+                                /opt/homebrew/opt/sonar-scanner/bin/sonar-scanner \
+                                -Dsonar.projectKey=otp2_fuel_trip_cost_calc \
+                                -Dsonar.sources=src \
+                                -Dsonar.projectName=Fuel_consumption_and_trip_cost_calculator \
+                                -Dsonar.coverage.exclusions=**/src/test/java/**,**/HelloController.java,**/HelloApplication.java,**/Launcher.java \
+                                -Dsonar.host.url=http://localhost:9000 \
+                                -Dsonar.login=${env.SONAR_TOKEN} \
+                                -Dsonar.java.binaries=target/classes
+                            """
                 }
             }
         }
